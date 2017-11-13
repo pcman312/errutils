@@ -3,7 +3,24 @@ package errutils
 import (
 	"errors"
 	"strings"
+
+	"github.com/hashicorp/go-multierror"
 )
+
+func NewMultiError() *multierror.Error {
+	return NewMultiErrorFmt(SingleLineFormat)
+}
+
+func NewMultiErrorFmt(format multierror.ErrorFormatFunc) *multierror.Error {
+	merr := &multierror.Error{
+		ErrorFormat: format,
+	}
+	return merr
+}
+
+func SingleLineFormat(errs []error) string {
+	return JoinErrsStr(", ", errs...)
+}
 
 // JoinErrs combines the given errors into a single error using the delimiter
 // If no errors are provided, this will return nil
